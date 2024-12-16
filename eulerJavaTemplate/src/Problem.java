@@ -43,7 +43,20 @@ public class Problem {
 
             int responseCode = connection.getResponseCode();
             if (responseCode == HttpsURLConnection.HTTP_OK) {
-                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String inputLine;
+                StringBuilder content = new StringBuilder();
+
+                while ((inputLine = input.readLine()) != null) {
+                    content.append(inputLine);
+                }
+
+                input.close();
+                connection.disconnect();
+
+                System.out.println(content.toString());
+            } else {
+                System.out.println("ERROR: " + responseCode);
             }
 
         } catch ( Exception e ) {
