@@ -1,3 +1,8 @@
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.time.LocalDate;
+
+
 public class EulerJavaTemplate {
     public static void main(String[] args) {
 
@@ -8,13 +13,23 @@ public class EulerJavaTemplate {
             return;
         }
 
-        Problem problem = new Problem(Integer.parseInt(args[0]));
-        problem.fetchPage();
-        problem.parsePage();
-        System.out.println(problem.getNumber());
-        System.out.println(problem.getTitle());
-        System.out.println(problem.getPrompt());
+        int problemNumber = Integer.parseInt(args[0]);
+        String fileName = "./" + problemNumber + ".java";
 
+        Problem problem = new Problem(problemNumber);
+        problem.fetchPage(); //get page from projecteuler.net
+        problem.parsePage(); //get title and prompt from HTML
+
+        //create file with starter code
+        try (PrintWriter write = new PrintWriter(fileName)) {
+            write.println("// Project Euler Problem #" + problemNumber + ": " + problem.getTitle());
+            write.println("// Author: Christian Brewer");
+            write.println("// Date: " + LocalDate.now());
+            write.println("// " + problem.getPrompt());
+            write.println("\npublic class EulerJava" + problemNumber + " {\n\tpublic static void main(String[] args) {\n\t}\n}");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 }
