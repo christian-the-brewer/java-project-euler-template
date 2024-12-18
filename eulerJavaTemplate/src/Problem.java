@@ -100,6 +100,10 @@ public class Problem {
         }
     }
 
+    private String removeDollarSigns(String content){
+        return content.replaceAll("[$]", "");
+    }
+
     public void parsePage() {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
@@ -109,12 +113,20 @@ public class Problem {
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(inputStream);
 
-            Element element1 = doc.getDocumentElement();
-            NodeList nodes = element1.getChildNodes();
-            System.out.println(nodes);
-            for (int i = 0; i < nodes.getLength(); i++) {
-                System.out.println("" + nodes.item(i).getTextContent());
+            NodeList h2Nodes = doc.getElementsByTagName("h2");
+            if (h2Nodes.getLength() > 0) {
+                setTitle(h2Nodes.item(0).getTextContent());
             }
+
+            NodeList divNodes = doc.getElementsByTagName("div");
+            for (int i = 0; i < divNodes.getLength(); i++) {
+                Element div = (Element) divNodes.item(i);
+                if ("problem_content".equals(div.getAttribute("class"))) {
+                    String problemContent = div.getTextContent();
+                    setPrompt(removeDollarSigns(problemContent));
+                }
+            }
+
         } catch (ParserConfigurationException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {

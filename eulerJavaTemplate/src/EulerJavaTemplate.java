@@ -11,5 +11,10 @@ public class EulerJavaTemplate {
         Problem problem = new Problem(Integer.parseInt(args[0]));
         problem.fetchPage();
         problem.parsePage();
+        System.out.println(problem.getNumber());
+        System.out.println(problem.getTitle());
+        System.out.println(problem.getPrompt());
+
+
     }
 }
